@@ -18,7 +18,7 @@ import org.itmo.itmoevent.view.fragments.EventSectionFragment
 import org.itmo.itmoevent.view.fragments.ManagementSectionFragment
 import org.itmo.itmoevent.view.fragments.ProfileSectionFragment
 import org.itmo.itmoevent.view.fragments.TaskSectionFragment
-import org.itmo.itmoevent.viewmodel.EventItemViewModel
+import org.itmo.itmoevent.viewmodel.MainViewModel
 import java.lang.IllegalStateException
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         R.id.nav_item_profile to ProfileSectionFragment()
     )
 
-    private val eventItemViewModel: EventItemViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,15 +80,19 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    eventItemViewModel.eventId.observe(this@MainActivity) {
+                    mainViewModel.eventId.observe(this@MainActivity) {
                         val argBundle =
-                            bundleOf(EventFragment.EVENT_ID_ARG to eventItemViewModel.eventId.value)
+                            bundleOf(EventFragment.EVENT_ID_ARG to mainViewModel.eventId.value)
                         supportFragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
                             .replace<EventFragment>(R.id.main_fragment_container, args = argBundle)
                             .addToBackStack(BACK_STACK_DETAILS_TAG)
                             .commit()
                     }
+                }
+
+                mainViewModel.exitIntended.observe(this@MainActivity) {
+                    this@MainActivity.finish()
                 }
 
             }
