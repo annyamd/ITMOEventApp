@@ -28,14 +28,14 @@ class GeneralEventsFragment : Fragment(R.layout.fragment_general_events),
     private var viewBinding: FragmentGeneralEventsBinding? = null
     private val eventItemViewModel: MainViewModel by activityViewModels()
 
-    private val model: MainEventsViewModel by viewModels {
-        val application = requireActivity().application as? EventApplication
-            ?: throw IllegalStateException("Application must be EventApplication implementation")
-        MainEventsViewModel.MainEventsViewModelFactory(
-            application.roleRepository,
-            application.eventRepository
-        )
-    }
+//    private val model: MainEventsViewModel by viewModels {
+//        val application = requireActivity().application as? EventApplication
+//            ?: throw IllegalStateException("Application must be EventApplication implementation")
+//        MainEventsViewModel.MainEventsViewModelFactory(
+//            application.roleRepository,
+//            application.eventRepository
+//        )
+//    }
 
 
     override fun onCreateView(
@@ -49,6 +49,15 @@ class GeneralEventsFragment : Fragment(R.layout.fragment_general_events),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val model: MainEventsViewModel by viewModels {
+            val application = requireActivity().application as? EventApplication
+                ?: throw IllegalStateException("Application must be EventApplication implementation")
+            MainEventsViewModel.MainEventsViewModelFactory(
+                application.roleRepository,
+                application.eventRepository
+            )
+        }
 
         val eventAdapter = EventAdapter(this)
 

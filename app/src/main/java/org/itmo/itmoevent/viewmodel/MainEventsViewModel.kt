@@ -30,7 +30,7 @@ class MainEventsViewModel(
     private val disabledFunctions by lazy {
         val privileges = roleRepository.systemPrivileges?.map { it.name }
             ?: throw IllegalStateException("Privileges not cached")
-        Function.values().filter { func ->
+        Function.entries.filter { func ->
             !privileges.contains(mapFuncToPrivilegeName(func))
         }
     }
@@ -111,6 +111,16 @@ class MainEventsViewModel(
             }
         }
     }
+//
+//    private fun updateEvents(title: String? = null,
+//                             start: Date? = null,
+//                             end: Date? = null,
+//                             status: String? = null,
+//                             format: String? = null
+//    ) = viewModelScope.launch {
+//        val loaded = loadEvents(title, start, end, status, format)
+//        eventsLiveData.value = loaded
+//    }
 
     private fun onlyLetters(s: String) = (s.firstOrNull { !it.isLetter() } == null)
     private fun isDateValid(dateString: String) = FILTER_DATE_REGEX.toRegex().matches(dateString)
@@ -136,11 +146,13 @@ class MainEventsViewModel(
         format: String? = null
     ): List<EventShort>? {
         if (!disabledFunctions.contains(Function.SEE_EVENTS)) {
+            Log.i("retrofit", "Start to load by filter")
             isEventListLoading.value = true
             val loaded = eventsRepository.getAllEvents(title, from, to, status, format)
             isEventListLoading.value = false
             return loaded
         }
+        Log.i("retrofit", "No privs to start to load by filter")
         return null
     }
 

@@ -30,15 +30,15 @@ class UserEventsFragment : Fragment(R.layout.fragment_user_events),
     EventAdapter.OnEventListClickListener {
     private var viewBinding: FragmentUserEventsBinding? = null
 
-    private val model: UserEventsViewModel by viewModels {
-        val application = requireActivity().application as? EventApplication
-            ?: throw IllegalStateException("Application must be EventApplication implementation")
-        UserEventsViewModel.UserEventsViewModelFactory(
-            application.eventRequestRepository,
-            application.roleRepository,
-            application.eventRepository
-        )
-    }
+//    private val model: UserEventsViewModel by viewModels {
+//        val application = requireActivity().application as? EventApplication
+//            ?: throw IllegalStateException("Application must be EventApplication implementation")
+//        UserEventsViewModel.UserEventsViewModelFactory(
+//            application.eventRequestRepository,
+//            application.roleRepository,
+//            application.eventRepository
+//        )
+//    }
 
     private val eventItemViewModel: MainViewModel by activityViewModels()
 
@@ -54,6 +54,16 @@ class UserEventsFragment : Fragment(R.layout.fragment_user_events),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val model: UserEventsViewModel by viewModels {
+            val application = requireActivity().application as? EventApplication
+                ?: throw IllegalStateException("Application must be EventApplication implementation")
+            UserEventsViewModel.UserEventsViewModelFactory(
+                application.eventRequestRepository,
+                application.roleRepository,
+                application.eventRepository
+            )
+        }
 
         val requestsAdapter = EventRequestAdapter()
         val eventsAdapter = EventAdapter(this)
