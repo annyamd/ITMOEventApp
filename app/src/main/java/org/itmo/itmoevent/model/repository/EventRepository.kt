@@ -42,8 +42,12 @@ class EventRepository(private val eventApi: EventApi) {
             val response = eventApi.getUserEventsByRole(roleId)
             if (response.isSuccessful) {
                 Log.i("retrofit", "User events loaded correctly: ${response.body()}")
-                response.body()?.map {
-                    mapEventShortDtoToEntity(it)
+                response.body()?.let { list ->
+                    list.filter {
+                        it.status != "DRAFT"
+                    }.map {
+                        mapEventShortDtoToEntity(it)
+                    }
                 }
             } else {
                 null

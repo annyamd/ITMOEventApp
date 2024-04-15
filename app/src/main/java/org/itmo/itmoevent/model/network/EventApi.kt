@@ -24,8 +24,8 @@ interface EventApi {
         @Query("format") format: String?
     ): Response<EventListDto>
 
-    @GET("requests/")
-    suspend fun getEventRequests(): Response<List<EventRequestDto>>
+    @GET("/api/roles/{id}/events")
+    suspend fun getEventRequests(@Path("id") orgRoleId: Int): Response<List<EventShortDto>>
 
     @GET("/api/roles/{id}/events")
     suspend fun getUserEventsByRole(@Path("id") roleId: Int): Response<List<EventShortDto>>

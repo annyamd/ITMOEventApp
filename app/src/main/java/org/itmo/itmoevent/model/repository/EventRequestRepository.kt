@@ -8,21 +8,29 @@ class EventRequestRepository(private val eventApi: EventApi) {
 
     suspend fun getEventsRequests(): List<EventRequest>? {
         try {
-            val response = eventApi.getEventRequests()
+            val response = eventApi.getEventRequests(ORGANIZER_ROLE_ID)
             return if (response.isSuccessful) {
-                response.body()?.map {
-                    EventRequest(
-                        it.id,
-                        it.title
-                    )
+                response.body()?.let { list ->
+                    list.filter {
+                        it.status == "DRAFT"
+                    }.map {
+                        EventRequest(
+                            it.id,
+                            it.title ?: ""
+                        )
+                    }
                 }
-            } else {
-                null
+                } else {
+                    null
+                }
+            } catch (ex: Exception) {
+                Log.i("retrofit", ex.stackTraceToString())
+                return null
             }
-        } catch (ex: Exception) {
-            Log.i("retrofit", ex.stackTraceToString())
-            return null
         }
-    }
 
-}
+        companion object {
+            private const val ORGANIZER_ROLE_ID: Int = 3
+        }
+
+    }
