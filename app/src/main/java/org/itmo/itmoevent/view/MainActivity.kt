@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.itmo.itmoevent.EventApplication
 import org.itmo.itmoevent.R
 import org.itmo.itmoevent.databinding.ActivityMainBinding
+import org.itmo.itmoevent.view.fragments.ActivityFragment
 import org.itmo.itmoevent.view.fragments.EventFragment
 import org.itmo.itmoevent.view.fragments.EventSectionFragment
 import org.itmo.itmoevent.view.fragments.ManagementSectionFragment
@@ -86,6 +87,16 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
                             .replace<EventFragment>(R.id.main_fragment_container, args = argBundle)
+                            .addToBackStack(BACK_STACK_DETAILS_TAG)
+                            .commit()
+                    }
+
+                    mainViewModel.activityId.observe(this@MainActivity) {
+                        val argBundle =
+                            bundleOf(ActivityFragment.ACTIVITY_ID_ARG to mainViewModel.activityId.value)
+                        supportFragmentManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            .replace<ActivityFragment>(R.id.main_fragment_container, args = argBundle)
                             .addToBackStack(BACK_STACK_DETAILS_TAG)
                             .commit()
                     }

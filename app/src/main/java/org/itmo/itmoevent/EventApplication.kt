@@ -6,10 +6,14 @@ import org.itmo.itmoevent.model.repository.EventDetailsRepository
 import org.itmo.itmoevent.model.repository.EventRepository
 import org.itmo.itmoevent.model.repository.EventRequestRepository
 import org.itmo.itmoevent.model.repository.RoleRepository
+import org.itmo.itmoevent.model.repository.PlaceRepository
+import org.itmo.itmoevent.model.repository.EventActivityRepository
 
 class EventApplication : Application() {
 
-    private val eventNetworkService = EventNetworkService()
+    private val eventNetworkService by lazy {
+        EventNetworkService(tokenManager)
+    }
 
     private val eventApi by lazy {
         eventNetworkService.eventApi
@@ -37,6 +41,18 @@ class EventApplication : Application() {
 
     val eventDetailsRepository by lazy {
         EventDetailsRepository(eventApi, placeApi)
+    }
+
+    val eventActivityRepository by lazy {
+        EventActivityRepository(eventApi)
+    }
+
+    val placeRepository by lazy {
+        PlaceRepository(placeApi)
+    }
+
+    val tokenManager by lazy {
+        TokenManager(applicationContext)
     }
 
 }

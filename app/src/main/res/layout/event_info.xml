@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+        <ImageView
+            android:id="@+id/event_image"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:contentDescription="@string/event_image"
+            android:src="@color/blue_200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="12dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="12dp" />
+
+        <HorizontalScrollView
+            android:id="@+id/event_chip_scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_short_desc">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/event_chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipSpacingVertical="0dp"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/event_chip_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Новое" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/event_chip_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="12 декабря - 16 декабря" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/event_chip_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Кронверский пр., 49" />
+
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/event_desc_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="@string/event_desc_header"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_chip_scroll_view" />
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/event_desc_icon_switch"-->
+        <!--                android:layout_width="16dp"-->
+        <!--                android:layout_height="16dp"-->
+        <!--                android:layout_marginStart="18dp"-->
+        <!--                android:contentDescription="@string/event_desc_show_close_desc"-->
+        <!--                android:rotation="90"-->
+        <!--                android:src="@drawable/ic_arrow"-->
+        <!--                app:layout_constraintBottom_toBottomOf="@+id/event_desc_header"-->
+        <!--                app:layout_constraintStart_toEndOf="@+id/event_desc_header"-->
+        <!--                app:layout_constraintTop_toTopOf="@+id/event_desc_header" />-->
+
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textAppearance="?textAppearanceHeadlineLarge"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_image"
+            tools:text="День карьеры" />
+
+        <TextView
+            android:id="@+id/event_short_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_title"
+            tools:text="Ваываыдвлатдаылатыдfffffffffffffffffлатывдлатывлатnjjbjkbkjbjbkb" />
+
+        <TextView
+            android:id="@+id/event_desc_long"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_desc_header"
+            tools:text="ВаываыдвлатдаылатыдfffsываываывааааааавввввввввввввввввВаываыдвлатдаылатыдfffsываываывааааааавввввввввввввввввВаываыдвлатдаылатыдfffsываываывааааааавввввввввввввввввВаываыдвлатдаылатыдfffsываываывааааааавввввввввввввввввввввввввввввввввввввввВаываыдвлатдаылатыдfffsываываываааааааввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввввв" />
+
+        <include
+            android:id="@+id/event_place_card"
+            layout="@layout/place_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_details_header"
+            app:layout_constraintWidth_max="600dp" />
+
+        <TextView
+            android:id="@+id/event_details_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/event_details_header"
+            android:textAppearance="?textAppearanceHeadlineSmall"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_desc_long" />
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/event_details_icon_switch"-->
+        <!--                android:layout_width="16dp"-->
+        <!--                android:layout_height="16dp"-->
+        <!--                android:layout_marginStart="18dp"-->
+        <!--                android:contentDescription="@string/event_icon_show_close_details"-->
+        <!--                android:rotation="90"-->
+        <!--                android:src="@drawable/ic_arrow"-->
+        <!--                app:layout_constraintBottom_toBottomOf="@+id/event_details_header"-->
+        <!--                app:layout_constraintStart_toEndOf="@+id/event_details_header"-->
+        <!--                app:layout_constraintTop_toTopOf="@+id/event_details_header" />-->
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/event_guideline_details"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="160dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/event_guideline_details_end"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="168dp" />
+
+        <TextView
+            android:id="@+id/event_details_time_hold_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="@string/event_details_time_hold_header"
+            app:layout_constraintEnd_toStartOf="@id/event_guideline_details"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_place_card" />
+
+        <TextView
+            android:id="@+id/event_details_time_hold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/event_guideline_details_end"
+            app:layout_constraintTop_toTopOf="@id/event_details_time_hold_label"
+            tools:text="12.231.1312 - 1231.12312.1321" />
+
+        <TextView
+            android:id="@+id/event_details_time_register_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/event_details_time_register_header"
+            app:layout_constraintEnd_toStartOf="@id/event_guideline_details"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_details_time_hold_label" />
+
+        <TextView
+            android:id="@+id/event_details_time_register"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/event_guideline_details_end"
+            app:layout_constraintTop_toTopOf="@id/event_details_time_register_label"
+            tools:text="12.231.1312 - 1231.12312.1321" />
+
+        <TextView
+            android:id="@+id/event_details_time_prepare_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/event_details_time_prepare_header"
+            app:layout_constraintEnd_toStartOf="@id/event_guideline_details"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_details_time_register_label" />
+
+        <TextView
+            android:id="@+id/event_details_time_prepare"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/event_guideline_details_end"
+            app:layout_constraintTop_toTopOf="@id/event_details_time_prepare_label"
+            tools:text="12.231.1312 - 1231.12312.1321" />
+
+        <TextView
+            android:id="@+id/event_details_participants_max_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/event_details_participants_max_header"
+            app:layout_constraintEnd_toStartOf="@id/event_guideline_details"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_details_time_prepare_label" />
+
+        <TextView
+            android:id="@+id/event_details_participants_max"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/event_guideline_details_end"
+            app:layout_constraintTop_toTopOf="@id/event_details_participants_max_label"
+            tools:text="22" />
+
+        <TextView
+            android:id="@+id/event_details_age_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/event_details_age_header"
+            app:layout_constraintEnd_toStartOf="@id/event_guideline_details"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/event_details_participants_max_label" />
+
+        <TextView
+            android:id="@+id/event_details_age"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/event_guideline_details_end"
+            app:layout_constraintTop_toTopOf="@id/event_details_age_label"
+            tools:text="18" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/event_details_group"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:constraint_referenced_ids="event_place_card,event_details_time_hold_label,event_details_time_hold,event_details_time_prepare,event_details_time_prepare_label,event_details_time_register_label,event_details_time_register,event_details_age,event_details_age_label,event_details_participants_max,event_details_participants_max_label" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

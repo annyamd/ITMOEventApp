@@ -8,6 +8,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,7 @@ import org.itmo.itmoevent.view.util.DisplayDateFormats
 import org.itmo.itmoevent.viewmodel.ContentItemLiveDataProvider
 import org.itmo.itmoevent.viewmodel.ContentItemLiveDataProvider.ContentItemUIState.*
 import org.itmo.itmoevent.viewmodel.EventViewModel
+import org.itmo.itmoevent.viewmodel.MainViewModel
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 
@@ -38,10 +40,11 @@ class EventFragment : Fragment(R.layout.fragment_event) {
     private var viewBinding: FragmentEventBinding? = null
     private var eventId: Int? = null
     private var model: EventViewModel? = null
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private val activitiesAdapter = EventAdapter(object : EventAdapter.OnEventListClickListener {
         override fun onEventClicked(eventId: Int) {
-            showShortToast("Clicked!")
+            mainViewModel.selectActivity(eventId)
         }
     })
 
@@ -98,12 +101,14 @@ class EventFragment : Fragment(R.layout.fragment_event) {
             eventSubsectionParticipantsRv.layoutManager = LinearLayoutManager(context)
             eventSubsectionParticipantsRv.adapter = participantsAdapter
 
-            eventDescHeader.setOnClickListener {
-                switchVisibility(eventDescLong)
-            }
+            eventInfo.run {
+                eventDescHeader.setOnClickListener {
+                    switchVisibility(eventDescLong)
+                }
 
-            eventDetailsHeader.setOnClickListener {
-                switchVisibility(eventDetailsGroup)
+                eventDetailsHeader.setOnClickListener {
+                    switchVisibility(eventDetailsGroup)
+                }
             }
 
             eventSubsectionOrganisatorsRoleSelect.roleEdit.run {
@@ -136,9 +141,9 @@ class EventFragment : Fragment(R.layout.fragment_event) {
             model.run {
                 handleContentItemViewByLiveData<Place>(
                     placeLiveData,
-                    eventPlaceCard.root
+                    eventInfo.eventPlaceCard.root
                 ) { place ->
-                    viewBinding?.run {
+                    viewBinding?.eventInfo?.run {
                         eventChipPlace.text = place.name
                         eventPlaceCard.placeItemTitle.text = place.name
                         eventPlaceCard.placeItemDesc.text = place.description
@@ -184,7 +189,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
                     eventContent,
                     eventProgressBarMain.root
                 ) { event ->
-                    viewBinding?.run {
+                    viewBinding?.eventInfo?.run {
                         val formatter =
                             DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_FULL)
                         event.run {

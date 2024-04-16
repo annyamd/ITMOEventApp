@@ -12,7 +12,7 @@ class EventRequestRepository(private val eventApi: EventApi) {
             return if (response.isSuccessful) {
                 response.body()?.let { list ->
                     list.filter {
-                        it.status == "DRAFT"
+                        it.status == ""
                     }.map {
                         EventRequest(
                             it.id,
