@@ -6,11 +6,8 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.GONE
@@ -27,20 +24,23 @@ import org.itmo.itmoevent.model.data.entity.UserRole
 import org.itmo.itmoevent.view.adapters.EventAdapter
 import org.itmo.itmoevent.view.adapters.ParticipantAdapter
 import org.itmo.itmoevent.view.adapters.UserAdapter
+import org.itmo.itmoevent.view.fragments.base.BaseFragment
 import org.itmo.itmoevent.view.util.DisplayDateFormats
-import org.itmo.itmoevent.viewmodel.ContentItemLiveDataProvider
-import org.itmo.itmoevent.viewmodel.ContentItemLiveDataProvider.ContentItemUIState.*
 import org.itmo.itmoevent.viewmodel.EventViewModel
 import org.itmo.itmoevent.viewmodel.MainViewModel
 import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 
-class EventFragment : Fragment(R.layout.fragment_event) {
+class EventFragment : BaseFragment<FragmentEventBinding>() {
 
-    private var viewBinding: FragmentEventBinding? = null
     private var eventId: Int? = null
     private var model: EventViewModel? = null
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentEventBinding
+        get() = { inflater, container, attach ->
+            FragmentEventBinding.inflate(inflater, container, attach)
+    }
 
     private val activitiesAdapter = EventAdapter(object : EventAdapter.OnEventListClickListener {
         override fun onEventClicked(eventId: Int) {
@@ -58,7 +58,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
         })
 
     private val tabItemsIndexViewMap by lazy {
-        viewBinding?.run {
+        viewBinding.run {
             mapOf(
                 0 to eventSubsectionAcivitiesRv,
                 1 to eventSubsectionOrgGroup,
@@ -67,18 +67,12 @@ class EventFragment : Fragment(R.layout.fragment_event) {
         }
     }
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewBinding = FragmentEventBinding.inflate(inflater, container, false)
-        return viewBinding?.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    override fun setup(view: View, savedInstanceState: Bundle?) {
         val eventId = requireArguments().getInt(EVENT_ID_ARG)
         this.eventId = eventId
 
@@ -93,7 +87,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
         }
         this.model = model
 
-        viewBinding?.run {
+        viewBinding.run {
             eventSubsectionAcivitiesRv.layoutManager = LinearLayoutManager(context)
             eventSubsectionAcivitiesRv.adapter = activitiesAdapter
             eventSubsectionOrganisatorsRv.layoutManager = LinearLayoutManager(context)
@@ -127,11 +121,11 @@ class EventFragment : Fragment(R.layout.fragment_event) {
 
             eventSubsectionsTab.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    show(tabItemsIndexViewMap?.get(tab?.position ?: 0))
+                    show(tabItemsIndexViewMap.get(tab?.position ?: 0))
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    hide(tabItemsIndexViewMap?.get(tab?.position ?: 0))
+                    hide(tabItemsIndexViewMap.get(tab?.position ?: 0))
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -143,7 +137,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
                     placeLiveData,
                     eventInfo.eventPlaceCard.root
                 ) { place ->
-                    viewBinding?.eventInfo?.run {
+                    viewBinding.eventInfo.run {
                         eventChipPlace.text = place.name
                         eventPlaceCard.placeItemTitle.text = place.name
                         eventPlaceCard.placeItemDesc.text = place.description
@@ -163,7 +157,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
                     false,
                     { blockTabItem(0) }
                 ) { activities ->
-                    viewBinding?.run {
+                    viewBinding.run {
                         activitiesAdapter.eventList = activities
                     }
                 }
@@ -175,7 +169,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
                     false,
                     { blockTabItem(2) }
                 ) { participants ->
-                    viewBinding?.run {
+                    viewBinding.run {
                         participantsAdapter.participantList = participants
                     }
                 }
@@ -193,7 +187,7 @@ class EventFragment : Fragment(R.layout.fragment_event) {
                     eventContent,
                     eventProgressBarMain.root
                 ) { event ->
-                    viewBinding?.eventInfo?.run {
+                    viewBinding.eventInfo?.run {
                         val formatter =
                             DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_FULL)
                         event.run {
@@ -243,81 +237,9 @@ class EventFragment : Fragment(R.layout.fragment_event) {
     }
 
     private fun blockTabItem(index: Int) {
-        viewBinding?.run {
+        viewBinding.run {
             eventSubsectionsTab.getTabAt(index)?.view?.isClickable = false
         }
-    }
-
-    private fun <T> handleContentItemViewByLiveData(
-        livedata: LiveData<ContentItemLiveDataProvider.ContentItemUIState>,
-        contentView: View,
-        progressBar: View? = null,
-        needToShow: Boolean = true,
-        ifDisabled: (() -> Unit)? = null,
-        bindContent: (T) -> Unit
-    ) {
-        livedata.observe(this.viewLifecycleOwner) { state ->
-            when (state) {
-                is Success<*> -> {
-                    val content = state.content!! as T
-                    bindContent(content)
-                    if (needToShow) {
-                        show(contentView)
-                        progressBar?.let {
-                            hide(progressBar)
-                        }
-                    }
-                }
-
-                is Error -> {
-                    if (needToShow) {
-                        show(contentView)
-                        progressBar?.let {
-                            hide(progressBar)
-                        }
-                    }
-                    state.errorMessage?.let {
-                        showShortToast(it)
-                    }
-                }
-
-                is Disabled -> {
-                    if (needToShow) {
-                        hide(contentView)
-                    }
-                    ifDisabled?.invoke()
-                    showShortToast("Blocked")
-                }
-
-                is Loading -> {
-                    if (needToShow) {
-                        hide(contentView)
-                        progressBar?.let {
-                            show(progressBar)
-                        }
-                    }
-                }
-
-                is Start -> {
-                }
-            }
-        }
-    }
-
-    private fun show(view: View?) {
-        view?.visibility = VISIBLE
-    }
-
-    private fun hide(view: View?) {
-        view?.visibility = GONE
-    }
-
-    private fun showShortToast(text: String) {
-        Toast.makeText(
-            context,
-            text,
-            Toast.LENGTH_LONG
-        ).show()
     }
 
     private fun switchVisibility(view: View) {
