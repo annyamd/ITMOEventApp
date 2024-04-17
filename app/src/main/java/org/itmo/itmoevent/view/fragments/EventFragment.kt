@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import org.itmo.itmoevent.EventApplication
 import org.itmo.itmoevent.R
 import org.itmo.itmoevent.databinding.FragmentEventBinding
 import org.itmo.itmoevent.model.data.entity.Event
@@ -26,7 +25,6 @@ import org.itmo.itmoevent.view.fragments.base.BaseFragment
 import org.itmo.itmoevent.view.util.DisplayDateFormats
 import org.itmo.itmoevent.viewmodel.EventViewModel
 import org.itmo.itmoevent.viewmodel.MainViewModel
-import java.lang.IllegalStateException
 import java.time.format.DateTimeFormatter
 
 class EventFragment : BaseFragment<FragmentEventBinding>() {
@@ -48,9 +46,8 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
         })
     }
 
-    private val orgAdapter by lazy {
-        UserAdapter()
-    }
+    private val orgAdapter by lazy { UserAdapter() }
+
     private val participantsAdapter by lazy {
         ParticipantAdapter(object : ParticipantAdapter.OnParticipantMarkChangeListener {
             override fun changeMark(participantId: Int, isChecked: Boolean) {
@@ -75,8 +72,6 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
         this.eventId = eventId
 
         val model: EventViewModel by viewModels {
-            val application = requireActivity().application as? EventApplication
-                ?: throw IllegalStateException("Application must be EventApplication implementation")
             EventViewModel.EventViewModelFactory(
                 eventId,
                 application.eventDetailsRepository,
