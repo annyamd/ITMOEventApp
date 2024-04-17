@@ -3,14 +3,12 @@ package org.itmo.itmoevent.view.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.GONE
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.itmo.itmoevent.EventApplication
@@ -40,22 +38,27 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentEventBinding
         get() = { inflater, container, attach ->
             FragmentEventBinding.inflate(inflater, container, attach)
+        }
+
+    private val activitiesAdapter by lazy {
+        EventAdapter(object : EventAdapter.OnEventListClickListener {
+            override fun onEventClicked(eventId: Int) {
+                mainViewModel.selectActivity(eventId)
+            }
+        })
     }
 
-    private val activitiesAdapter = EventAdapter(object : EventAdapter.OnEventListClickListener {
-        override fun onEventClicked(eventId: Int) {
-            mainViewModel.selectActivity(eventId)
-        }
-    })
-
-    private val orgAdapter = UserAdapter()
-    private val participantsAdapter =
+    private val orgAdapter by lazy {
+        UserAdapter()
+    }
+    private val participantsAdapter by lazy {
         ParticipantAdapter(object : ParticipantAdapter.OnParticipantMarkChangeListener {
             override fun changeMark(participantId: Int, isChecked: Boolean) {
                 showShortToast("participant $participantId - $isChecked")
                 model?.markEventParticipant(participantId, isChecked)
             }
         })
+    }
 
     private val tabItemsIndexViewMap by lazy {
         viewBinding.run {
@@ -65,11 +68,6 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 2 to eventSubsectionParticipantsGroup
             )
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun setup(view: View, savedInstanceState: Bundle?) {
@@ -121,11 +119,11 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
 
             eventSubsectionsTab.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    show(tabItemsIndexViewMap.get(tab?.position ?: 0))
+                    show(tabItemsIndexViewMap[tab?.position ?: 0])
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    hide(tabItemsIndexViewMap.get(tab?.position ?: 0))
+                    hide(tabItemsIndexViewMap[tab?.position ?: 0])
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -187,7 +185,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     eventContent,
                     eventProgressBarMain.root
                 ) { event ->
-                    viewBinding.eventInfo?.run {
+                    viewBinding.eventInfo.run {
                         val formatter =
                             DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_FULL)
                         event.run {
@@ -237,17 +235,11 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
     }
 
     private fun blockTabItem(index: Int) {
-        viewBinding.run {
-            eventSubsectionsTab.getTabAt(index)?.view?.isClickable = false
-        }
+        viewBinding.eventSubsectionsTab.getTabAt(index)?.view?.isClickable = false
     }
 
     private fun switchVisibility(view: View) {
-        when (view.visibility) {
-            VISIBLE -> view.visibility = GONE
-            GONE -> view.visibility = VISIBLE
-            INVISIBLE -> view.visibility = VISIBLE
-        }
+        view.isVisible = !view.isVisible
     }
 
     companion object {
