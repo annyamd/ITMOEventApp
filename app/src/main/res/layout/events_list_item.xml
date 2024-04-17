@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,12 +15,14 @@
 
         <TextView
             android:id="@+id/event_item_header"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:textAppearance="?textAppearanceTitleMedium"
+            app:layout_constraintEnd_toStartOf="@id/event_item_img"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/event_item_time"
-            android:textAppearance="?textAppearanceTitleMedium"
+            app:layout_constraintHorizontal_bias="0"
             tools:text="День карьеры" />
 
         <TextView
@@ -27,9 +30,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            app:layout_constraintHorizontal_bias="0"
             tools:text="Невероятное восхитительное событие в Университете..."
             android:textAppearance="?textAppearanceBodyMedium"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_max="250dp"
             app:layout_constraintTop_toBottomOf="@id/event_item_header"
             app:layout_constraintEnd_toStartOf="@id/event_item_img"/>
 
@@ -38,31 +43,11 @@
             android:layout_width="112dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
+            android:contentDescription="@string/event_item_image_desc"
+            android:src="@color/blue_100"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/event_item_desc"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@color/blue_50"
-            android:contentDescription="@string/event_item_image_desc"/>
-
-        <ImageView
-            android:id="@+id/event_item_place_icon"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginTop="4dp"
-            android:contentDescription="@string/place_icon_desc"
-            android:src="@drawable/ic_place"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_item_desc" />
-
-        <TextView
-            android:id="@+id/event_item_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?textAppearanceLabelMedium"
-            app:layout_constraintBottom_toBottomOf="@id/event_item_place_icon"
-            app:layout_constraintStart_toEndOf="@id/event_item_place_icon"
-            tools:text="Zoom" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/event_item_time"
@@ -79,13 +64,13 @@
             android:id="@+id/event_item_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:textAppearance="?textAppearanceLabelMedium"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/event_item_img"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_item_place"
+            app:layout_constraintTop_toBottomOf="@id/event_item_desc"
             tools:text="Запись открыта" />
 
 
