@@ -38,7 +38,6 @@ class EventAdapter(
             eventItemHeader.text = event.title
             eventItemDesc.text = event.shortDesc
             eventItemStatus.text = event.status
-//            eventItemPlace.text = event.shortDesc
             val formatter = DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_SHORT)
             eventItemTime.text = event.start?.format(formatter) ?: "Не выбрано"
 

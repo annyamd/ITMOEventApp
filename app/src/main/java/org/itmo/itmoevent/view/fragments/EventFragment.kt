@@ -148,6 +148,10 @@ class EventFragment : Fragment(R.layout.fragment_event) {
                         eventPlaceCard.placeItemTitle.text = place.name
                         eventPlaceCard.placeItemDesc.text = place.description
                         eventPlaceCard.placeItemFormat.text = place.format
+
+                        eventPlaceCard.root.setOnClickListener {
+                            mainViewModel.selectPlace(place.id)
+                        }
                     }
                 }
 
