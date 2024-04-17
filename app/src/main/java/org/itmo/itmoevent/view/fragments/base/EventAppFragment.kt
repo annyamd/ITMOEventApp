@@ -1,4 +1,4 @@
-package org.itmo.itmoevent.view.fragments
+package org.itmo.itmoevent.view.fragments.base
 
 import androidx.viewbinding.ViewBinding
 import org.itmo.itmoevent.EventApplication

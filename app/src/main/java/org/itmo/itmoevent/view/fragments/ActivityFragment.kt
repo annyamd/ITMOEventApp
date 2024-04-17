@@ -11,6 +11,7 @@ import org.itmo.itmoevent.databinding.FragmentActivBinding
 import org.itmo.itmoevent.databinding.PlaceItemBinding
 import org.itmo.itmoevent.model.data.entity.EventsActivity
 import org.itmo.itmoevent.model.data.entity.Place
+import org.itmo.itmoevent.view.fragments.base.BaseFragment
 import org.itmo.itmoevent.view.fragments.binding.ActivityInfoContentBinding
 import org.itmo.itmoevent.view.fragments.binding.ContentBinding
 import org.itmo.itmoevent.view.fragments.binding.PlaceItemContentBinding

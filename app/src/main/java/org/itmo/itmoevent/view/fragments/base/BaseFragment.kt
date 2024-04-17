@@ -1,4 +1,4 @@
-package org.itmo.itmoevent.view.fragments
+package org.itmo.itmoevent.view.fragments.base
 
 import android.view.View
 import android.widget.Toast

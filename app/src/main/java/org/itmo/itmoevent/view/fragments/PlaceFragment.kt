@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import org.itmo.itmoevent.databinding.FragmentPlaceBinding
 import org.itmo.itmoevent.model.data.entity.Place
+import org.itmo.itmoevent.view.fragments.base.BaseFragment
 import org.itmo.itmoevent.viewmodel.PlaceViewModel
 
 class PlaceFragment : BaseFragment<FragmentPlaceBinding>() {
