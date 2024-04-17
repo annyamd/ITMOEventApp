@@ -6,14 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import org.itmo.itmoevent.R
+import org.itmo.itmoevent.databinding.EventInfoBinding
 import org.itmo.itmoevent.databinding.FragmentActivBinding
+import org.itmo.itmoevent.databinding.PlaceItemBinding
 import org.itmo.itmoevent.model.data.entity.EventsActivity
 import org.itmo.itmoevent.model.data.entity.Place
-import org.itmo.itmoevent.view.util.DisplayDateFormats
+import org.itmo.itmoevent.view.fragments.binding.ActivityInfoContentBinding
+import org.itmo.itmoevent.view.fragments.binding.ContentBinding
+import org.itmo.itmoevent.view.fragments.binding.PlaceItemContentBinding
 import org.itmo.itmoevent.viewmodel.EventActivityViewModel
 import org.itmo.itmoevent.viewmodel.MainViewModel
-import java.time.format.DateTimeFormatter
 
 class ActivityFragment : BaseFragment<FragmentActivBinding>() {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentActivBinding
@@ -23,7 +25,11 @@ class ActivityFragment : BaseFragment<FragmentActivBinding>() {
 
     private var activityId: Int? = null
     private val mainViewModel: MainViewModel by activityViewModels()
-
+    private val placeContentBinding: ContentBinding<PlaceItemBinding, Place> =
+        PlaceItemContentBinding()
+    private val activityInfoContentBinding: ContentBinding<EventInfoBinding, EventsActivity> by lazy {
+        ActivityInfoContentBinding(requireActivity())
+    }
 
     override fun setup(view: View, savedInstanceState: Bundle?) {
         val activityId = requireArguments().getInt(ACTIVITY_ID_ARG)
@@ -56,10 +62,8 @@ class ActivityFragment : BaseFragment<FragmentActivBinding>() {
 
     private fun bindPlace(place: Place) {
         viewBinding.activityInfo.run {
+            placeContentBinding.bindContentToView(eventPlaceCard, place)
             eventChipPlace.text = place.name
-            eventPlaceCard.placeItemTitle.text = place.name
-            eventPlaceCard.placeItemDesc.text = place.description
-            eventPlaceCard.placeItemFormat.text = place.format
 
             eventPlaceCard.root.setOnClickListener {
                 mainViewModel.selectPlace(place.id)
@@ -68,37 +72,7 @@ class ActivityFragment : BaseFragment<FragmentActivBinding>() {
     }
 
     private fun bindActivityInfo(activity: EventsActivity) {
-        viewBinding.activityInfo.run {
-            val formatter =
-                DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_FULL)
-            activity.run {
-                eventTitle.text = title
-                eventShortDesc.text = shortDesc
-                eventDescLong.text = longDesc
-                eventChipStatus.text = status
-                eventChipTime.text = startDate.format(formatter)
-                eventDetailsTimeHold.text =
-                    getString(
-                        R.string.event_duration,
-                        startDate.format(formatter),
-                        endDate.format(formatter)
-                    )
-                eventDetailsTimeRegister.text =
-                    getString(
-                        R.string.event_duration,
-                        regStart.format(formatter),
-                        regEnd.format(formatter)
-                    )
-                eventDetailsTimePrepare.text =
-                    getString(
-                        R.string.event_duration,
-                        preparingStart.format(formatter),
-                        preparingEnd.format(formatter)
-                    )
-                eventDetailsAge.text = participantAgeLowest.toString()
-                eventDetailsParticipantsMax.text = participantLimit.toString()
-            }
-        }
+        activityInfoContentBinding.bindContentToView(viewBinding.activityInfo, activity)
     }
 
     companion object {
