@@ -9,5 +9,5 @@ data class Place(
     val description: String,
     val latitude: Float,
     val longitude: Float,
-    val renderInfo: String
+    val renderInfo: String?
 )

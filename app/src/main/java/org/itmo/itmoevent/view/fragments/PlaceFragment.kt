@@ -44,7 +44,7 @@ class PlaceFragment : BaseFragment<FragmentPlaceBinding>() {
     private fun bindPlace(place: Place) {
         viewBinding.run {
             placeName.text = place.name
-            placeAddress.text = place.description
+            placeAddress.text = place.address
             placeFormat.text = place.format
             placeRoom.text = place.room
             placeDesc.text = place.description
