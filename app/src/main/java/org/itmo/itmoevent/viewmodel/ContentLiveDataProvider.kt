@@ -11,16 +11,16 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ContentItemLiveDataProvider<T>(
+class ContentLiveDataProvider<T>(
     private val isDisabled: Boolean,
     private val scope: CoroutineScope,
-    private val loadContent: (ContentItemLiveDataProvider<T>) -> Deferred<T?>
+    private val loadContent: (ContentLiveDataProvider<T>) -> Deferred<T?>
 ) {
 
     private fun load() = scope.launch {
         if (!isDisabled) {
             contentIsLoading.value = true
-            val deferred = loadContent(this@ContentItemLiveDataProvider)
+            val deferred = loadContent(this@ContentLiveDataProvider)
             val content = deferred.await()
             if (content == null) {
                 contentCall.value = ContentItemCallResult.Error("Err")

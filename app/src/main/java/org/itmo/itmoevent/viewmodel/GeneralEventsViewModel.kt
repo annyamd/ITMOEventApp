@@ -6,14 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import org.itmo.itmoevent.model.data.entity.EventShort
-import org.itmo.itmoevent.model.data.entity.enums.PrivilegeName
 import org.itmo.itmoevent.model.data.entity.enums.PrivilegeName.*
 import org.itmo.itmoevent.model.repository.EventRepository
 import org.itmo.itmoevent.model.repository.RoleRepository
-import java.lang.IllegalStateException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -22,22 +21,25 @@ import java.time.format.DateTimeParseException
 import java.util.Date
 
 
-class MainEventsViewModel(
+class GeneralEventsViewModel(
     private val roleRepository: RoleRepository,
     private val eventsRepository: EventRepository
 ) : ViewModel() {
 
-    private val disabledFunctions by lazy {
-        val privileges = roleRepository.systemPrivileges?.map { it.name }
-            ?: throw IllegalStateException("Privileges not cached")
-        Function.entries.filter { func ->
-            !privileges.contains(mapFuncToPrivilegeName(func))
-        }
+    private val filterStateLiveData = MutableLiveData<FilterState?>(null)
+    val eventListLiveData = filterStateLiveData.switchMap { filter ->
+        ContentLiveDataProvider<List<EventShort>?>(
+            !roleRepository.systemPrivilegesNames!!.contains(VIEW_ALL_EVENTS),
+            viewModelScope
+        ) {
+            viewModelScope.async {
+                loadEvents(filter)
+            }
+        }.contentLiveData
     }
-    val disabledFunctionsLiveData: LiveData<List<Function>> = MutableLiveData(disabledFunctions)
 
-    val isEventListLoading = MutableLiveData<Boolean>()
-    val eventsLiveData = MutableLiveData<List<EventShort>?>()
+    val isFilterAvailableLiveData: LiveData<Boolean> =
+        MutableLiveData(roleRepository.systemPrivilegesNames!!.contains(SEARCH_EVENTS_AND_ACTIVITIES))
 
     val filterInputTitleLiveData = MutableLiveData<String?>(null)
     val filterResultTitleLiveData = filterInputTitleLiveData.map { titleReceived ->
@@ -50,11 +52,6 @@ class MainEventsViewModel(
             InputResult.Success
         }
     }
-
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(FILTER_DATE_PATTERN)
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(
-        FILTER_DATETIME_PATTERN
-    )
 
     val filterInputDateStartLiveData = MutableLiveData<String?>(null)
     val filterResultDateStartLiveData = filterInputDateStartLiveData.map { from ->
@@ -76,12 +73,6 @@ class MainEventsViewModel(
 
     val filterInputStatusLiveData = MutableLiveData<String?>()
     val filterInputFormatLiveData = MutableLiveData<String?>()
-
-    init {
-        viewModelScope.launch {
-            eventsLiveData.value = loadEvents()
-        }
-    }
 
     fun submitFilterForm() {
         if (filterResultDateStartLiveData.value is InputResult.Success
@@ -105,26 +96,17 @@ class MainEventsViewModel(
                 "request to load status: $status, format: $format, title: $title, start: $start, end: $end"
             )
 
-            viewModelScope.launch {
-                val loaded = loadEvents(title, start, end, status, format)
-                eventsLiveData.value = loaded
-            }
+            filterStateLiveData.value = FilterState(title, start, end, status, format)
         }
     }
-//
-//    private fun updateEvents(title: String? = null,
-//                             start: Date? = null,
-//                             end: Date? = null,
-//                             status: String? = null,
-//                             format: String? = null
-//    ) = viewModelScope.launch {
-//        val loaded = loadEvents(title, start, end, status, format)
-//        eventsLiveData.value = loaded
-//    }
 
     private fun onlyLetters(s: String) = (s.firstOrNull { !it.isLetter() } == null)
     private fun isDateValid(dateString: String) = FILTER_DATE_REGEX.toRegex().matches(dateString)
     private fun parseDate(dateString: String?): Date? {
+        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(FILTER_DATE_PATTERN)
+        val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(
+            FILTER_DATETIME_PATTERN
+        )
         val dateTime: LocalDateTime = try {
             LocalDate.parse(dateString, dateFormatter).atStartOfDay()
         } catch (ex: DateTimeParseException) {
@@ -138,39 +120,24 @@ class MainEventsViewModel(
     }
 
 
-    private suspend fun loadEvents(
-        title: String? = null,
-        from: Date? = null,
-        to: Date? = null,
-        status: String? = null,
-        format: String? = null
-    ): List<EventShort>? {
-        if (!disabledFunctions.contains(Function.SEE_EVENTS)) {
-            Log.i("retrofit", "Start to load by filter")
-            isEventListLoading.value = true
-            val loaded = eventsRepository.getAllEvents(title, from, to, status, format)
-            isEventListLoading.value = false
-            return loaded
-        }
-        Log.i("retrofit", "No privs to start to load by filter")
-        return null
-    }
-
-    private fun mapFuncToPrivilegeName(func: Function): PrivilegeName =
-        when (func) {
-            Function.SEE_EVENTS -> VIEW_ALL_EVENTS
-            Function.FILTER_EVENTS -> SEARCH_EVENTS_AND_ACTIVITIES
+    private suspend fun loadEvents(filter: FilterState? = null) =
+        if (filter == null) {
+            eventsRepository.getAllEvents()
+        } else {
+            filter.run { eventsRepository.getAllEvents(title, from, to, status, format) }
         }
 
+    private data class FilterState(
+        val title: String? = null,
+        val from: Date? = null,
+        val to: Date? = null,
+        val status: String? = null,
+        val format: String? = null
+    )
 
     sealed class InputResult {
         data class Error(val text: String) : InputResult()
         data object Success : InputResult()
-    }
-
-    enum class Function {
-        SEE_EVENTS,
-        FILTER_EVENTS
     }
 
     companion object {
@@ -194,8 +161,8 @@ class MainEventsViewModel(
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainEventsViewModel::class.java)) {
-                return MainEventsViewModel(roleRepository, eventRepository) as T
+            if (modelClass.isAssignableFrom(GeneralEventsViewModel::class.java)) {
+                return GeneralEventsViewModel(roleRepository, eventRepository) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

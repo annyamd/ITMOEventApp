@@ -5,12 +5,12 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.tabs.TabLayout
-import org.itmo.itmoevent.viewmodel.ContentItemLiveDataProvider
+import org.itmo.itmoevent.viewmodel.ContentLiveDataProvider
 
 abstract class BaseFragment<T : ViewBinding> : EventAppFragment<T>() {
 
     protected fun <T> handleContentItemViewByLiveData(
-        livedata: LiveData<ContentItemLiveDataProvider.ContentItemUIState>,
+        livedata: LiveData<ContentLiveDataProvider.ContentItemUIState>,
         contentView: View,
         progressBar: View? = null,
         needToShow: Boolean = true,
@@ -19,7 +19,7 @@ abstract class BaseFragment<T : ViewBinding> : EventAppFragment<T>() {
     ) {
         livedata.observe(this.viewLifecycleOwner) { state ->
             when (state) {
-                is ContentItemLiveDataProvider.ContentItemUIState.Success<*> -> {
+                is ContentLiveDataProvider.ContentItemUIState.Success<*> -> {
                     val content = state.content!! as T
                     bindContent(content)
                     if (needToShow) {
@@ -30,7 +30,7 @@ abstract class BaseFragment<T : ViewBinding> : EventAppFragment<T>() {
                     }
                 }
 
-                is ContentItemLiveDataProvider.ContentItemUIState.Error -> {
+                is ContentLiveDataProvider.ContentItemUIState.Error -> {
                     if (needToShow) {
                         show(contentView)
                         progressBar?.let {
@@ -42,7 +42,7 @@ abstract class BaseFragment<T : ViewBinding> : EventAppFragment<T>() {
                     }
                 }
 
-                is ContentItemLiveDataProvider.ContentItemUIState.Disabled -> {
+                is ContentLiveDataProvider.ContentItemUIState.Disabled -> {
                     if (needToShow) {
                         hide(contentView)
                     }
@@ -50,7 +50,7 @@ abstract class BaseFragment<T : ViewBinding> : EventAppFragment<T>() {
                     showShortToast("Blocked")
                 }
 
-                is ContentItemLiveDataProvider.ContentItemUIState.Loading -> {
+                is ContentLiveDataProvider.ContentItemUIState.Loading -> {
                     if (needToShow) {
                         hide(contentView)
                         progressBar?.let {
@@ -59,7 +59,7 @@ abstract class BaseFragment<T : ViewBinding> : EventAppFragment<T>() {
                     }
                 }
 
-                is ContentItemLiveDataProvider.ContentItemUIState.Start -> {
+                is ContentLiveDataProvider.ContentItemUIState.Start -> {
                 }
             }
         }

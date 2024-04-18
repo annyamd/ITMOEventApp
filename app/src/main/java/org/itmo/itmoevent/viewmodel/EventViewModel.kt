@@ -13,7 +13,7 @@ import org.itmo.itmoevent.model.data.entity.UserRole
 import org.itmo.itmoevent.model.data.entity.enums.PrivilegeName
 import org.itmo.itmoevent.model.repository.EventDetailsRepository
 import org.itmo.itmoevent.model.repository.RoleRepository
-import org.itmo.itmoevent.viewmodel.ContentItemLiveDataProvider.ContentItemUIState.*
+import org.itmo.itmoevent.viewmodel.ContentLiveDataProvider.ContentItemUIState.*
 
 class EventViewModel(
     private val eventId: Int,
@@ -34,7 +34,7 @@ class EventViewModel(
         }
     }
 
-    val placeLiveData = ContentItemLiveDataProvider(
+    val placeLiveData = ContentLiveDataProvider(
         !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_EVENT_PLACE),
         viewModelScope
     ) {
@@ -46,21 +46,21 @@ class EventViewModel(
     }.contentLiveData
 
 
-    val activitiesLiveData = ContentItemLiveDataProvider(
+    val activitiesLiveData = ContentLiveDataProvider(
         !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_EVENT_ACTIVITIES),
         viewModelScope
     ) {
         viewModelScope.async { eventDetailsRepository.getActivities(eventId) }
     }.contentLiveData
 
-    val eventInfoLiveData = ContentItemLiveDataProvider(
+    val eventInfoLiveData = ContentLiveDataProvider(
         false,
         viewModelScope
     ) {
         viewModelScope.async { eventDetailsRepository.getEventInfo(eventId) }
     }.contentLiveData
 
-    val orgsLiveData = ContentItemLiveDataProvider(
+    val orgsLiveData = ContentLiveDataProvider(
         !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_ORGANIZER_USERS),
         viewModelScope
     ) {
@@ -71,7 +71,7 @@ class EventViewModel(
     }.contentLiveData
 
     private var participants: List<Participant>? = null
-    val participantsLiveData = ContentItemLiveDataProvider(
+    val participantsLiveData = ContentLiveDataProvider(
         false,
         viewModelScope
     ) {

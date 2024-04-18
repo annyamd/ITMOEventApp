@@ -16,14 +16,14 @@ class EventActivityViewModel(
     roleRepository: RoleRepository
 ) : ViewModel() {
 
-    val activityInfoLiveData = ContentItemLiveDataProvider(
+    val activityInfoLiveData = ContentLiveDataProvider(
         false,
         viewModelScope
     ) {
         viewModelScope.async { activityRepository.getActivity(activityId) }
     }.contentLiveData
 
-    val placeLiveData = ContentItemLiveDataProvider(
+    val placeLiveData = ContentLiveDataProvider(
         !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_EVENT_PLACE),
         viewModelScope
     ) {

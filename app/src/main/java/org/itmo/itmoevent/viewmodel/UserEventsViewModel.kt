@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import org.itmo.itmoevent.model.data.entity.EventShort
 import org.itmo.itmoevent.model.data.entity.Role
-import org.itmo.itmoevent.model.data.entity.enums.PrivilegeName
 import org.itmo.itmoevent.model.repository.EventRepository
 import org.itmo.itmoevent.model.repository.RoleRepository
 import org.itmo.itmoevent.model.repository.EventRequestRepository
@@ -21,14 +20,15 @@ class UserEventsViewModel(
 
     private var roleList: List<Role>? = null
 
-    val eventRequestsLiveData = ContentItemLiveDataProvider(
-        !rolesRepository.systemPrivilegesNames!!.contains(PrivilegeName.CREATE_EVENT),
+    val eventRequestsLiveData = ContentLiveDataProvider(
+//        !rolesRepository.systemPrivilegesNames!!.contains(PrivilegeName.EDIT_EVENT_INFO),
+        false,
         viewModelScope
     ) {
         viewModelScope.async { eventReqRepository.getEventsRequests() }
     }.contentLiveData
 
-    val roleListLiveData = ContentItemLiveDataProvider(
+    val roleListLiveData = ContentLiveDataProvider(
         false,
         viewModelScope
     ) {
@@ -43,7 +43,7 @@ class UserEventsViewModel(
     var roleNameIndex = MutableLiveData<Int>()
 
     val roleEventListLiveData = roleNameIndex.switchMap { roleIndex ->
-        ContentItemLiveDataProvider<List<EventShort>?>(
+        ContentLiveDataProvider<List<EventShort>?>(
             false,
             viewModelScope
         ) {

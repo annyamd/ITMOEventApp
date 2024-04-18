@@ -14,7 +14,7 @@ class PlaceViewModel(
     roleRepository: RoleRepository
 ) : ViewModel() {
 
-    val placeLiveData = ContentItemLiveDataProvider(
+    val placeLiveData = ContentLiveDataProvider(
         !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_EVENT_PLACE),
         viewModelScope
     ) {
