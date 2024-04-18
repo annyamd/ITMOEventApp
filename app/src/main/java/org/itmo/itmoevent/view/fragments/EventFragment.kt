@@ -11,8 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import org.itmo.itmoevent.R
+import org.itmo.itmoevent.databinding.EventInfoBinding
 import org.itmo.itmoevent.databinding.FragmentEventBinding
+import org.itmo.itmoevent.databinding.PlaceItemBinding
 import org.itmo.itmoevent.model.data.entity.Event
 import org.itmo.itmoevent.model.data.entity.EventShort
 import org.itmo.itmoevent.model.data.entity.Participant
@@ -22,16 +23,22 @@ import org.itmo.itmoevent.view.adapters.EventAdapter
 import org.itmo.itmoevent.view.adapters.ParticipantAdapter
 import org.itmo.itmoevent.view.adapters.UserAdapter
 import org.itmo.itmoevent.view.fragments.base.BaseFragment
-import org.itmo.itmoevent.view.util.DisplayDateFormats
+import org.itmo.itmoevent.view.fragments.binding.ContentBinding
+import org.itmo.itmoevent.view.fragments.binding.EventInfoContentBinding
+import org.itmo.itmoevent.view.fragments.binding.PlaceItemContentBinding
 import org.itmo.itmoevent.viewmodel.EventViewModel
 import org.itmo.itmoevent.viewmodel.MainViewModel
-import java.time.format.DateTimeFormatter
 
 class EventFragment : BaseFragment<FragmentEventBinding>() {
 
     private var eventId: Int? = null
     private var model: EventViewModel? = null
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val eventInfoContentBinding: ContentBinding<EventInfoBinding, Event> by lazy {
+        EventInfoContentBinding(requireActivity())
+    }
+    private val placeContentBinding: ContentBinding<PlaceItemBinding, Place> =
+        PlaceItemContentBinding()
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentEventBinding
         get() = { inflater, container, attach ->
@@ -126,22 +133,11 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
             })
 
             model.run {
-                handleContentItemViewByLiveData<Place>(
+                handleContentItemViewByLiveData(
                     placeLiveData,
-                    eventInfo.eventPlaceCard.root
-                ) { place ->
-                    viewBinding.eventInfo.run {
-                        eventChipPlace.text = place.name
-                        eventPlaceCard.placeItemTitle.text = place.name
-                        eventPlaceCard.placeItemDesc.text = place.description
-                        eventPlaceCard.placeItemFormat.text = place.format
-
-                        eventPlaceCard.root.setOnClickListener {
-                            mainViewModel.selectPlace(place.id)
-                        }
-                    }
-                }
-
+                    eventInfo.eventPlaceCard.root,
+                    bindContent = ::bindPlace
+                )
 
                 handleContentItemViewByLiveData<List<EventShort>>(
                     activitiesLiveData,
@@ -175,43 +171,12 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     { blockTabItem(1) }
                 ) { }
 
-                handleContentItemViewByLiveData<Event>(
+                handleContentItemViewByLiveData(
                     eventInfoLiveData,
                     eventContent,
-                    eventProgressBarMain.root
-                ) { event ->
-                    viewBinding.eventInfo.run {
-                        val formatter =
-                            DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_FULL)
-                        event.run {
-                            eventTitle.text = title
-                            eventShortDesc.text = shortDesc
-                            eventDescLong.text = longDesc
-                            eventChipStatus.text = status
-                            eventChipTime.text = startDate.format(formatter)
-                            eventDetailsTimeHold.text =
-                                getString(
-                                    R.string.event_duration,
-                                    startDate.format(formatter),
-                                    endDate.format(formatter)
-                                )
-                            eventDetailsTimeRegister.text =
-                                getString(
-                                    R.string.event_duration,
-                                    regStart.format(formatter),
-                                    regEnd.format(formatter)
-                                )
-                            eventDetailsTimePrepare.text =
-                                getString(
-                                    R.string.event_duration,
-                                    preparingStart.format(formatter),
-                                    preparingEnd.format(formatter)
-                                )
-                            eventDetailsAge.text = participantAgeLowest.toString()
-                            eventDetailsParticipantsMax.text = participantLimit.toString()
-                        }
-                    }
-                }
+                    eventProgressBarMain.root,
+                    bindContent = ::bindEventInfo
+                )
 
                 rolesList.observe(this@EventFragment.viewLifecycleOwner) { roles ->
                     (eventSubsectionOrganisatorsRoleSelect.roleEdit as? MaterialAutoCompleteTextView)?.setSimpleItems(
@@ -225,6 +190,21 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     }
                 }
 
+            }
+        }
+    }
+
+    private fun bindEventInfo(event: Event) {
+        eventInfoContentBinding.bindContentToView(viewBinding.eventInfo, event)
+    }
+
+    private fun bindPlace(place: Place) {
+        viewBinding.eventInfo.run {
+            placeContentBinding.bindContentToView(eventPlaceCard, place)
+            eventChipPlace.text = place.name
+
+            eventPlaceCard.root.setOnClickListener {
+                mainViewModel.selectPlace(place.id)
             }
         }
     }
