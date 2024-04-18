@@ -32,37 +32,29 @@ import org.itmo.itmoevent.viewmodel.MainViewModel
 class EventFragment : BaseFragment<FragmentEventBinding>() {
 
     private var eventId: Int? = null
-    private var model: EventViewModel? = null
+
     private val mainViewModel: MainViewModel by activityViewModels()
+
+    private var _model: EventViewModel? = null
+    private val model: EventViewModel
+        get() = _model as EventViewModel
+
     private val eventInfoContentBinding: ContentBinding<EventInfoBinding, Event> by lazy {
         EventInfoContentBinding(requireActivity())
     }
-    private val placeContentBinding: ContentBinding<PlaceItemBinding, Place> =
+
+    private val placeContentBinding: ContentBinding<PlaceItemBinding, Place> by lazy {
         PlaceItemContentBinding()
+    }
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentEventBinding
         get() = { inflater, container, attach ->
             FragmentEventBinding.inflate(inflater, container, attach)
         }
 
-    private val activitiesAdapter by lazy {
-        EventAdapter(object : EventAdapter.OnEventListClickListener {
-            override fun onEventClicked(eventId: Int) {
-                mainViewModel.selectActivity(eventId)
-            }
-        })
-    }
-
-    private val orgAdapter by lazy { UserAdapter() }
-
-    private val participantsAdapter by lazy {
-        ParticipantAdapter(object : ParticipantAdapter.OnParticipantMarkChangeListener {
-            override fun changeMark(participantId: Int, isChecked: Boolean) {
-                showShortToast("participant $participantId - $isChecked")
-                model?.markEventParticipant(participantId, isChecked)
-            }
-        })
-    }
+    private var activitiesAdapter: EventAdapter? = null
+    private var orgAdapter: UserAdapter? = null
+    private var participantsAdapter: ParticipantAdapter? = null
 
     private val tabItemsIndexViewMap by lazy {
         viewBinding.run {
@@ -85,7 +77,28 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 application.roleRepository
             )
         }
-        this.model = model
+        _model = model
+
+        setupRecyclerViews()
+        registerViewListeners()
+        observeLiveData()
+    }
+
+    private fun setupRecyclerViews() {
+        activitiesAdapter =
+            activitiesAdapter ?: EventAdapter(object : EventAdapter.OnEventListClickListener {
+                override fun onEventClicked(eventId: Int) {
+                    mainViewModel.selectActivity(eventId)
+                }
+            })
+        participantsAdapter = participantsAdapter ?: ParticipantAdapter(object :
+            ParticipantAdapter.OnParticipantMarkChangeListener {
+            override fun changeMark(participantId: Int, isChecked: Boolean) {
+                showShortToast("participant $participantId - $isChecked")
+                model.markEventParticipant(participantId, isChecked)
+            }
+        })
+        orgAdapter = orgAdapter ?: UserAdapter()
 
         viewBinding.run {
             eventSubsectionAcivitiesRv.layoutManager = LinearLayoutManager(context)
@@ -94,15 +107,17 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
             eventSubsectionOrganisatorsRv.adapter = orgAdapter
             eventSubsectionParticipantsRv.layoutManager = LinearLayoutManager(context)
             eventSubsectionParticipantsRv.adapter = participantsAdapter
+        }
+    }
 
-            eventInfo.run {
-                eventDescHeader.setOnClickListener {
-                    switchVisibility(eventDescLong)
-                }
+    private fun registerViewListeners() {
+        viewBinding.run {
+            eventInfo.eventDescHeader.setOnClickListener {
+                switchVisibility(eventInfo.eventDescLong)
+            }
 
-                eventDetailsHeader.setOnClickListener {
-                    switchVisibility(eventDetailsGroup)
-                }
+            eventInfo.eventDetailsHeader.setOnClickListener {
+                switchVisibility(eventInfo.eventDetailsGroup)
             }
 
             eventSubsectionOrganisatorsRoleSelect.roleEdit.run {
@@ -113,10 +128,6 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
 
             eventSubsectionParticipantsMarkAll.setOnClickListener {
                 model.markEventParticipantsAll()
-            }
-
-            eventEditBtn.setOnClickListener {
-
             }
 
             eventSubsectionsTab.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -131,7 +142,11 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
 
             })
+        }
+    }
 
+    private fun observeLiveData() {
+        viewBinding.run {
             model.run {
                 handleContentItemViewByLiveData(
                     placeLiveData,
@@ -147,7 +162,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     { blockTabItem(0) }
                 ) { activities ->
                     viewBinding.run {
-                        activitiesAdapter.eventList = activities
+                        activitiesAdapter?.eventList = activities
                     }
                 }
 
@@ -159,7 +174,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     { blockTabItem(2) }
                 ) { participants ->
                     viewBinding.run {
-                        participantsAdapter.participantList = participants
+                        participantsAdapter?.participantList = participants
                     }
                 }
 
@@ -186,11 +201,11 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
 
                 roleOrganizersList.observe(this@EventFragment.viewLifecycleOwner) { orgs ->
                     orgs?.let {
-                        orgAdapter.userList = orgs
+                        orgAdapter?.userList = orgs
                     }
                 }
-
             }
+
         }
     }
 
