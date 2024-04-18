@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 
 
 class EventAdapter(
-    private val onEventListClickListener: OnEventListClickListener
+    private val onEventListClickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     var eventList: List<EventShort> = emptyList()
@@ -42,13 +42,9 @@ class EventAdapter(
             eventItemTime.text = event.start?.format(formatter) ?: "Не выбрано"
 
             this.root.setOnClickListener {
-                onEventListClickListener.onEventClicked(event.id)
+                onEventListClickListener.invoke(event.id)
             }
         }
-    }
-
-    interface OnEventListClickListener {
-        fun onEventClicked(eventId: Int)
     }
 
 }

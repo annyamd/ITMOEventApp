@@ -26,8 +26,7 @@ import org.itmo.itmoevent.viewmodel.UserEventsViewModel
 import java.lang.IllegalStateException
 
 
-class UserEventsFragment : Fragment(R.layout.fragment_user_events),
-    EventAdapter.OnEventListClickListener {
+class UserEventsFragment : Fragment(R.layout.fragment_user_events) {
     private var viewBinding: FragmentUserEventsBinding? = null
 
 //    private val model: UserEventsViewModel by viewModels {
@@ -66,7 +65,7 @@ class UserEventsFragment : Fragment(R.layout.fragment_user_events),
         }
 
         val requestsAdapter = EventRequestAdapter()
-        val eventsAdapter = EventAdapter(this)
+        val eventsAdapter = EventAdapter(::onEventClicked)
 
         viewBinding?.run {
             userEventsRequestsRv.layoutManager = LinearLayoutManager(context)
@@ -175,12 +174,10 @@ class UserEventsFragment : Fragment(R.layout.fragment_user_events),
 
 
     private fun show(view: View?) {
-//        view?.visibility = View.VISIBLE
         view?.isVisible = true
     }
 
     private fun hide(view: View?) {
-//        view?.visibility = GONE
         view?.isVisible = false
     }
 
@@ -193,7 +190,7 @@ class UserEventsFragment : Fragment(R.layout.fragment_user_events),
     }
 
 
-    override fun onEventClicked(eventId: Int) {
+    private fun onEventClicked(eventId: Int) {
         eventItemViewModel.selectEventItem(eventId)
     }
 

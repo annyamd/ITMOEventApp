@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import org.itmo.itmoevent.databinding.ParticipantListItemBinding
 import org.itmo.itmoevent.model.data.entity.Participant
 
-class ParticipantAdapter(private val onParticipantMarkChangeListener: OnParticipantMarkChangeListener) : RecyclerView.Adapter<ParticipantAdapter.ParticipantViewHolder>() {
+class ParticipantAdapter(private val onParticipantMarkChangeListener: (Int, Boolean) -> Unit) :
+    RecyclerView.Adapter<ParticipantAdapter.ParticipantViewHolder>() {
 
     var participantList: List<Participant> = emptyList()
         set(value) {
@@ -36,13 +37,9 @@ class ParticipantAdapter(private val onParticipantMarkChangeListener: OnParticip
             participantItemMarkSwitch.isChecked = participant.visited
 
             participantItemMarkSwitch.setOnCheckedChangeListener { _, isChecked ->
-                onParticipantMarkChangeListener.changeMark(participant.id, isChecked)
+                onParticipantMarkChangeListener.invoke(participant.id, isChecked)
             }
         }
-    }
-
-    interface OnParticipantMarkChangeListener {
-        fun changeMark(participantId: Int, isChecked: Boolean)
     }
 
 }

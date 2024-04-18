@@ -23,8 +23,7 @@ import org.itmo.itmoevent.viewmodel.MainEventsViewModel.Function.*
 import java.lang.IllegalStateException
 
 
-class GeneralEventsFragment : Fragment(R.layout.fragment_general_events),
-    EventAdapter.OnEventListClickListener {
+class GeneralEventsFragment : Fragment(R.layout.fragment_general_events) {
     private var viewBinding: FragmentGeneralEventsBinding? = null
     private val eventItemViewModel: MainViewModel by activityViewModels()
 
@@ -59,7 +58,7 @@ class GeneralEventsFragment : Fragment(R.layout.fragment_general_events),
             )
         }
 
-        val eventAdapter = EventAdapter(this)
+        val eventAdapter = EventAdapter(::onEventClicked)
 
         viewBinding?.run {
             generalEventsRv.adapter = eventAdapter
@@ -129,7 +128,7 @@ class GeneralEventsFragment : Fragment(R.layout.fragment_general_events),
         FILTER_EVENTS to binding.genEventsFilterCard
     )
 
-    override fun onEventClicked(eventId: Int) {
+    private fun onEventClicked(eventId: Int) {
         eventItemViewModel.selectEventItem(eventId)
     }
 

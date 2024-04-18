@@ -85,19 +85,8 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
     }
 
     private fun setupRecyclerViews() {
-        activitiesAdapter =
-            activitiesAdapter ?: EventAdapter(object : EventAdapter.OnEventListClickListener {
-                override fun onEventClicked(eventId: Int) {
-                    mainViewModel.selectActivity(eventId)
-                }
-            })
-        participantsAdapter = participantsAdapter ?: ParticipantAdapter(object :
-            ParticipantAdapter.OnParticipantMarkChangeListener {
-            override fun changeMark(participantId: Int, isChecked: Boolean) {
-                showShortToast("participant $participantId - $isChecked")
-                model.markEventParticipant(participantId, isChecked)
-            }
-        })
+        activitiesAdapter = activitiesAdapter ?: EventAdapter(::onActivityClicked)
+        participantsAdapter = participantsAdapter ?: ParticipantAdapter(::onParticipantCheckChanged)
         orgAdapter = orgAdapter ?: UserAdapter()
 
         viewBinding.run {
@@ -121,8 +110,8 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
             }
 
             eventSubsectionOrganisatorsRoleSelect.roleEdit.run {
-                this.setOnItemClickListener { _, _, _, _ ->
-                    model.roleName.value = this.text.toString()
+                setOnItemClickListener { _, _, _, _ ->
+                    model.roleName.value = text.toString()
                 }
             }
 
@@ -145,18 +134,25 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
         }
     }
 
+    private fun onActivityClicked(id: Int) {
+        mainViewModel.selectActivity(id)
+    }
+
+    private fun onParticipantCheckChanged(participantId: Int, isChecked: Boolean) {
+        showShortToast("participant $participantId - $isChecked")
+        model.markEventParticipant(participantId, isChecked)
+    }
+
     private fun observeLiveData() {
         viewBinding.run {
             model.run {
                 handleContentItemViewByLiveData(
-                    placeLiveData,
-                    eventInfo.eventPlaceCard.root,
+                    placeLiveData, eventInfo.eventPlaceCard.root,
                     bindContent = ::bindPlace
                 )
 
                 handleContentItemViewByLiveData<List<EventShort>>(
-                    activitiesLiveData,
-                    eventSubsectionAcivitiesRv,
+                    activitiesLiveData, eventSubsectionAcivitiesRv,
                     eventSubsectionsProgressBar.root,
                     false,
                     { blockTabItem(0) }
@@ -167,8 +163,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 }
 
                 handleContentItemViewByLiveData<List<Participant>>(
-                    participantsLiveData,
-                    eventSubsectionParticipantsRv,
+                    participantsLiveData, eventSubsectionParticipantsRv,
                     eventSubsectionsProgressBar.root,
                     false,
                     { blockTabItem(2) }
@@ -179,17 +174,13 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 }
 
                 handleContentItemViewByLiveData<List<UserRole>>(
-                    orgsLiveData,
-                    eventSubsectionOrgGroup,
-                    eventSubsectionsProgressBar.root,
+                    orgsLiveData, eventSubsectionOrgGroup, eventSubsectionsProgressBar.root,
                     false,
                     { blockTabItem(1) }
                 ) { }
 
                 handleContentItemViewByLiveData(
-                    eventInfoLiveData,
-                    eventContent,
-                    eventProgressBarMain.root,
+                    eventInfoLiveData, eventContent, eventProgressBarMain.root,
                     bindContent = ::bindEventInfo
                 )
 
@@ -200,9 +191,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 }
 
                 roleOrganizersList.observe(this@EventFragment.viewLifecycleOwner) { orgs ->
-                    orgs?.let {
-                        orgAdapter?.userList = orgs
-                    }
+                    orgAdapter?.userList = orgs ?: emptyList()
                 }
             }
 
