@@ -33,7 +33,7 @@ interface EventApi {
     @GET("/api/events")
     suspend fun getEventActivities(@Query("parentId") eventId: Int): Response<EventListDto>
 
-    @GET("/api/events/{id}/participants/list")
+    @GET("/api/events/{id}/participants")
     suspend fun getEventParticipants(@Path("id") eventId: Int): Response<List<ParticipantDto>>
 
     @PUT("/api/events/{id}/participants")

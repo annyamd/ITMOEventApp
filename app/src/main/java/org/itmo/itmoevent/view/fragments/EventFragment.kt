@@ -160,9 +160,9 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 ) { activities ->
                     viewBinding.run {
                         activitiesAdapter?.eventList = activities
-                        //temprary
-                        eventSubsectionAcivitiesRv.isVisible = activities.isNotEmpty()
-                        eventSubsectionsEmptyList.root.isVisible = activities.isEmpty()
+//                        //temp
+//                        eventSubsectionAcivitiesRv.isVisible = activities.isNotEmpty()
+//                        eventSubsectionsEmptyList.root.isVisible = activities.isEmpty()
                     }
                 }
 
@@ -196,9 +196,9 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
 
                 roleOrganizersList.observe(this@EventFragment.viewLifecycleOwner) { orgs ->
                     orgAdapter?.userList = orgs ?: emptyList()
-                    //temprary
-                    eventSubsectionOrganisatorsRv.isVisible = !orgs.isNullOrEmpty()
-                    eventSubsectionsEmptyList.root.isVisible = orgs.isNullOrEmpty()
+//                    //temp
+//                    eventSubsectionOrganisatorsRv.isVisible = !orgs.isNullOrEmpty()
+//                    eventSubsectionsEmptyList.root.isVisible = orgs.isNullOrEmpty()
                 }
             }
 

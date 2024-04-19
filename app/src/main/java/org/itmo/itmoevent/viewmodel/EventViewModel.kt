@@ -61,7 +61,8 @@ class EventViewModel(
     }.contentLiveData
 
     val orgsLiveData = ContentLiveDataProvider(
-        !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_ORGANIZER_USERS),
+        false,
+//        !roleRepository.systemPrivilegesNames!!.contains(PrivilegeName.VIEW_ORGANIZER_USERS),
         viewModelScope
     ) {
         viewModelScope.async {
