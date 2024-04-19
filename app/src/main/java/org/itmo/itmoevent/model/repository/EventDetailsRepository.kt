@@ -15,6 +15,7 @@ import org.itmo.itmoevent.model.network.EventApi
 import org.itmo.itmoevent.model.network.PlaceApi
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.Date
 
 class EventDetailsRepository(private val eventApi: EventApi, private val placeApi: PlaceApi) {
 
@@ -126,25 +127,16 @@ class EventDetailsRepository(private val eventApi: EventApi, private val placeAp
         eventDto.fullDescription,
         eventDto.placeId,
         eventDto.status,
-        LocalDateTime.ofInstant(eventDto.startDate.toInstant(), ZoneId.systemDefault()),
-        LocalDateTime.ofInstant(eventDto.endDate.toInstant(), ZoneId.systemDefault()),
+        getLocalDateTime(eventDto.startDate),
+        getLocalDateTime(eventDto.endDate),
         eventDto.format,
-        LocalDateTime.ofInstant(
-            eventDto.registrationStart.toInstant(),
-            ZoneId.systemDefault()
-        ),
-        LocalDateTime.ofInstant(
-            eventDto.registrationEnd.toInstant(),
-            ZoneId.systemDefault()
-        ),
+        getLocalDateTime(eventDto.registrationStart),
+        getLocalDateTime(eventDto.registrationEnd),
         eventDto.participantLimit,
         eventDto.participantAgeLowest,
         eventDto.participantAgeHighest,
-        LocalDateTime.ofInstant(
-            eventDto.preparingStart.toInstant(),
-            ZoneId.systemDefault()
-        ),
-        LocalDateTime.ofInstant(eventDto.preparingEnd.toInstant(), ZoneId.systemDefault())
+        getLocalDateTime(eventDto.preparingStart),
+        getLocalDateTime(eventDto.preparingEnd)
     )
 
     private fun mapActivityDtoToEntity(activity: EventShortDto) = EventShort(
@@ -183,5 +175,9 @@ class EventDetailsRepository(private val eventApi: EventApi, private val placeAp
         placeDto.longitude,
         placeDto.renderInfo
     )
+
+    private fun getLocalDateTime(date: Date?) = date?.let {
+        LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault())
+    }
 
 }

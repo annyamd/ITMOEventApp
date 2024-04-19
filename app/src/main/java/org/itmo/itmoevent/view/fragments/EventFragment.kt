@@ -59,9 +59,9 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
     private val tabItemsIndexViewMap by lazy {
         viewBinding.run {
             mapOf(
-                0 to eventSubsectionAcivitiesRv,
-                1 to eventSubsectionOrgGroup,
-                2 to eventSubsectionParticipantsGroup
+                TAB_ACTIVITIES_INDEX to eventSubsectionAcivitiesRv,
+                TAB_ORGANIZERS_INDEX to eventSubsectionOrgGroup,
+                TAB_PARTICIPANTS_INDEX to eventSubsectionParticipantsGroup
             )
         }
     }
@@ -122,6 +122,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
             eventSubsectionsTab.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     show(tabItemsIndexViewMap[tab?.position ?: 0])
+                    hide(eventSubsectionsEmptyList.root)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -155,10 +156,13 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     activitiesLiveData, eventSubsectionAcivitiesRv,
                     eventSubsectionsProgressBar.root,
                     false,
-                    { blockTabItem(0) }
+                    { blockTabItem(TAB_ACTIVITIES_INDEX) }
                 ) { activities ->
                     viewBinding.run {
                         activitiesAdapter?.eventList = activities
+                        //temprary
+                        eventSubsectionAcivitiesRv.isVisible = activities.isNotEmpty()
+                        eventSubsectionsEmptyList.root.isVisible = activities.isEmpty()
                     }
                 }
 
@@ -166,7 +170,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                     participantsLiveData, eventSubsectionParticipantsRv,
                     eventSubsectionsProgressBar.root,
                     false,
-                    { blockTabItem(2) }
+                    { blockTabItem(TAB_PARTICIPANTS_INDEX) }
                 ) { participants ->
                     viewBinding.run {
                         participantsAdapter?.participantList = participants
@@ -176,7 +180,7 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
                 handleContentItemViewByLiveData<List<UserRole>>(
                     orgsLiveData, eventSubsectionOrgGroup, eventSubsectionsProgressBar.root,
                     false,
-                    { blockTabItem(1) }
+                    { blockTabItem(TAB_ORGANIZERS_INDEX) }
                 ) { }
 
                 handleContentItemViewByLiveData(
@@ -192,14 +196,22 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
 
                 roleOrganizersList.observe(this@EventFragment.viewLifecycleOwner) { orgs ->
                     orgAdapter?.userList = orgs ?: emptyList()
+                    //temprary
+                    eventSubsectionOrganisatorsRv.isVisible = !orgs.isNullOrEmpty()
+                    eventSubsectionsEmptyList.root.isVisible = orgs.isNullOrEmpty()
                 }
             }
 
         }
     }
 
+
     private fun bindEventInfo(event: Event) {
         eventInfoContentBinding.bindContentToView(viewBinding.eventInfo, event)
+        if (event.placeId == null) {
+            hide(viewBinding.eventInfo.eventChipPlace)
+            hide(viewBinding.eventInfo.eventPlaceCard.root)
+        }
     }
 
     private fun bindPlace(place: Place) {
@@ -222,7 +234,11 @@ class EventFragment : BaseFragment<FragmentEventBinding>() {
     }
 
     companion object {
-        const val EVENT_ID_ARG: String = "eventId"
+        const val EVENT_ID_ARG = "eventId"
+
+        private const val TAB_ACTIVITIES_INDEX = 0
+        private const val TAB_ORGANIZERS_INDEX = 1
+        private const val TAB_PARTICIPANTS_INDEX = 2
     }
 
 }

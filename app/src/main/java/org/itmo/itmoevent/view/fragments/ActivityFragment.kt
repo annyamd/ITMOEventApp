@@ -74,6 +74,11 @@ class ActivityFragment : BaseFragment<FragmentActivBinding>() {
 
     private fun bindActivityInfo(activity: EventsActivity) {
         activityInfoContentBinding.bindContentToView(viewBinding.activityInfo, activity)
+
+        if (activity.placeId == null) {
+            hide(viewBinding.activityInfo.eventChipPlace)
+            hide(viewBinding.activityInfo.eventPlaceCard.root)
+        }
     }
 
     companion object {

@@ -10,34 +10,35 @@ import java.time.format.DateTimeFormatter
 class ActivityInfoContentBinding(private val context: Context) :
     ContentBinding<EventInfoBinding, EventsActivity> {
     override fun bindContentToView(viewBinding: EventInfoBinding, content: EventsActivity) {
+        val emptyFieldText = context.getString(R.string.not_filled)
         viewBinding.run {
             content.run {
                 val formatter =
                     DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_FULL)
-                eventTitle.text = title
-                eventShortDesc.text = shortDesc
-                eventDescLong.text = longDesc
-                eventChipStatus.text = status
-                eventChipTime.text = startDate.format(formatter)
-                eventDetailsAge.text = participantAgeLowest.toString()
-                eventDetailsParticipantsMax.text = participantLimit.toString()
+                eventTitle.text = title ?: emptyFieldText
+                eventShortDesc.text = shortDesc ?: emptyFieldText
+                eventDescLong.text = longDesc ?: emptyFieldText
+                eventChipStatus.text = status ?: emptyFieldText
+                eventChipTime.text = startDate?.format(formatter) ?: emptyFieldText
+                eventDetailsAge.text = participantAgeLowest?.toString() ?: emptyFieldText
+                eventDetailsParticipantsMax.text = participantLimit?.toString() ?: emptyFieldText
                 eventDetailsTimeHold.text =
                     context.getString(
                         R.string.event_duration,
-                        startDate.format(formatter),
-                        endDate.format(formatter)
+                        startDate?.format(formatter) ?: emptyFieldText,
+                        endDate?.format(formatter) ?: emptyFieldText
                     )
                 eventDetailsTimeRegister.text =
                     context.getString(
                         R.string.event_duration,
-                        regStart.format(formatter),
-                        regEnd.format(formatter)
+                        regStart?.format(formatter) ?: emptyFieldText,
+                        regEnd?.format(formatter) ?: emptyFieldText
                     )
                 eventDetailsTimePrepare.text =
                     context.getString(
                         R.string.event_duration,
-                        preparingStart.format(formatter),
-                        preparingEnd.format(formatter)
+                        preparingStart?.format(formatter) ?: emptyFieldText,
+                        preparingEnd?.format(formatter) ?: emptyFieldText
                     )
             }
         }
