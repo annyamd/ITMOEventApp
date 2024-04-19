@@ -8,13 +8,11 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/event_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:menu="@menu/event_details_menu"
-        app:navigationIcon="@drawable/ic_arrow"
-        app:navigationIconTint="?colorOnSurfaceVariant" />
+<!--    <com.google.android.material.appbar.MaterialToolbar-->
+<!--        android:id="@+id/event_toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        app:menu="@menu/event_details_menu" />-->
 
     <include
         android:id="@+id/event_progress_bar_main"
@@ -26,8 +24,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/event_content"
@@ -91,6 +88,16 @@
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/event_subsections_tab"/>
+
+            <include layout="@layout/empty_list"
+                android:id="@+id/event_subsections_empty_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/event_subsections_tab"
+                android:visibility="gone"/>
 
             <include
                 android:id="@+id/event_subsection_organisators_role_select"

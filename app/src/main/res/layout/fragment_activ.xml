@@ -7,13 +7,11 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/activity_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:menu="@menu/event_details_menu"
-        app:navigationIcon="@drawable/ic_arrow"
-        app:navigationIconTint="?colorOnSurfaceVariant" />
+<!--    <com.google.android.material.appbar.MaterialToolbar-->
+<!--        android:id="@+id/activity_toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        app:menu="@menu/event_details_menu" />-->
 
     <include
         android:id="@+id/activity_progress_bar_main"
@@ -25,8 +23,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/activity_content"
