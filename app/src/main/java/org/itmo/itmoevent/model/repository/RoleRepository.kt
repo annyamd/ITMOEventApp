@@ -19,7 +19,7 @@ class RoleRepository(private val roleApi: RoleApi) {
             try {
                 val response = roleApi.getUserSystemPrivileges()
                 if (response.isSuccessful) {
-                    response.body()?.let { list ->
+                    response.body()?.privileges?.let { list ->
                         systemPrivileges = list.map {
                             mapPrivilegeDtoToEntity(it)
                         }

@@ -40,7 +40,7 @@ class EventAdapter(
             eventItemStatus.text = event.status
 //            eventItemPlace.text = event.shortDesc
             val formatter = DateTimeFormatter.ofPattern(DisplayDateFormats.DATE_EVENT_SHORT)
-            eventItemTime.text = event.start.format(formatter)
+            eventItemTime.text = event.start?.format(formatter) ?: "Не выбрано"
 
             this.root.setOnClickListener {
                 onEventListClickListener.onEventClicked(event.id)

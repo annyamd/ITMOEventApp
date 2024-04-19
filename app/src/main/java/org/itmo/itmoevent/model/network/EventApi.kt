@@ -1,6 +1,7 @@
 package org.itmo.itmoevent.model.network
 
 import org.itmo.itmoevent.model.data.dto.EventDto
+import org.itmo.itmoevent.model.data.dto.EventListDto
 import org.itmo.itmoevent.model.data.dto.EventRequestDto
 import org.itmo.itmoevent.model.data.dto.EventShortDto
 import org.itmo.itmoevent.model.data.dto.ParticipantDto
@@ -21,7 +22,7 @@ interface EventApi {
         @Query("endDate") to: Date?,
         @Query("status") status: String?,
         @Query("format") format: String?
-    ): Response<List<EventShortDto>>
+    ): Response<EventListDto>
 
     @GET("requests/")
     suspend fun getEventRequests(): Response<List<EventRequestDto>>
@@ -30,7 +31,7 @@ interface EventApi {
     suspend fun getUserEventsByRole(@Path("id") roleId: Int): Response<List<EventShortDto>>
 
     @GET("/api/events")
-    suspend fun getEventActivities(@Query("parentId") eventId: Int): Response<List<EventShortDto>>
+    suspend fun getEventActivities(@Query("parentId") eventId: Int): Response<EventListDto>
 
     @GET("/api/events/{id}/participants/list")
     suspend fun getEventParticipants(@Path("id") eventId: Int): Response<List<ParticipantDto>>

@@ -7,3 +7,7 @@ data class PrivilegeDto(
     val name: PrivilegeName,
     val description: String
 )
+
+data class PrivilegesListDto(
+    val privileges: List<PrivilegeDto>
+)

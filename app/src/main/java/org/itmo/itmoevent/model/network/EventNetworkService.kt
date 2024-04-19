@@ -1,25 +1,43 @@
 package org.itmo.itmoevent.model.network
 
+import android.util.Log
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
-class EventNetworkService {
+
+class EventNetworkService(private val tokenManager: TokenManager) {
 
     private val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()
 
     private val mainOkHttpClient = OkHttpClient()
+    private val loggingInterceptor: HttpLoggingInterceptor by lazy {
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        logging
+    }
+    private val tokenInjectorInterceptor: Interceptor by lazy {
+        Interceptor { chain ->
+            val token = runBlocking {
+                tokenManager.getToken().first()
+            }
+
+            Log.d("interceptor", token!!)
+            val request = chain.request().newBuilder()
+            request.addHeader("Authorization", "Bearer $token")
+            chain.proceed(request.build())
+        }
+    }
 
     private val recipesOkHttpClient = mainOkHttpClient.newBuilder()
-        .addInterceptor { chain ->
-            val req = chain.request()
-                .newBuilder()
-                .addHeader("Authorization", "Bearer $TEST_TOKEN")
-                .build()
-            chain.proceed(req)
-        }
+        .addInterceptor(tokenInjectorInterceptor)
+        .addInterceptor(loggingInterceptor)
         .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()
@@ -32,9 +50,9 @@ class EventNetworkService {
     val rolesApi = retrofit.create<RoleApi>()
     val placeApi = retrofit.create<PlaceApi>()
 
+
+
     companion object {
-        //        private const val BASE_URL: String = "https://f5539bef-d7f4-4553-84d9-19f916d17a00.mock.pstmn.io/"
         private const val BASE_URL: String = "http://95.216.146.187:8080"
-        private const val TEST_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMzNkNjY2QG5pdWl0bW8ucnUiLCJpYXQiOjE3MTMxMTY5OTEsImV4cCI6MTcxMzEyMDU5MX0.c7EWHcqzjMmioOkZH0h8Z3AVOLmFFbmgxlp20fQHqkg"
-    }
+   }
 }

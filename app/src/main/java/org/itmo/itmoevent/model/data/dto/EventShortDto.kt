@@ -5,13 +5,17 @@ import java.util.Date
 
 data class EventShortDto(
     val id: Int,
-    val title: String,
+    val title: String?,
     @SerializedName("shortDescription")
-    val shortDesc: String,
-    val status: String,
+    val shortDesc: String?,
+    val status: String?,
     @SerializedName("startDate")
-    val start: Date,
+    val start: Date?,
     @SerializedName("endDate")
-    val end: Date,
-    val format: String
+    val end: Date?,
+    val format: String?
+)
+
+data class EventListDto(
+    val items: List<EventShortDto>
 )

@@ -37,7 +37,7 @@ class EventDetailsRepository(private val eventApi: EventApi, private val placeAp
         return try {
             val response = eventApi.getEventActivities(eventId)
             if (response.isSuccessful) {
-                response.body()?.map {
+                response.body()?.items?.map {
                     mapActivityDtoToEntity(it)
                 }
             } else {
@@ -152,8 +152,8 @@ class EventDetailsRepository(private val eventApi: EventApi, private val placeAp
         activity.title,
         activity.shortDesc,
         activity.status,
-        LocalDateTime.ofInstant(activity.start.toInstant(), ZoneId.systemDefault()),
-        LocalDateTime.ofInstant(activity.end.toInstant(), ZoneId.systemDefault()),
+        LocalDateTime.ofInstant(activity.start?.toInstant(), ZoneId.systemDefault()),
+        LocalDateTime.ofInstant(activity.end?.toInstant(), ZoneId.systemDefault()),
         activity.format
     )
 
