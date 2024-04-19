@@ -91,8 +91,9 @@ class GeneralEventsFragment : BaseFragment<FragmentGeneralEventsBinding>() {
                         )
                             .show()
                     }
-
                     eventAdapter?.eventList = eventList ?: emptyList()
+                    generalEventsRv.isVisible = !eventList.isNullOrEmpty()
+                    genEventsEmptyList.root.isVisible = eventList.isNullOrEmpty()
                 }
 
                 isFilterAvailableLiveData.observe(this@GeneralEventsFragment) { isAvailable ->

@@ -158,7 +158,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="false"
-            tools:listitem="@layout/events_list_item" />
+            tools:listitem="@layout/events_list_item"
+            android:visibility="visible"/>
+
+        <include layout="@layout/empty_list"
+            android:id="@+id/gen_events_empty_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

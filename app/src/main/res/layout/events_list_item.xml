@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:layout_marginBottom="12dp">
+    android:layout_marginBottom="12dp"
+    android:clickable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,11 +17,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="?textAppearanceTitleMedium"
             app:layout_constraintEnd_toStartOf="@id/event_item_img"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/event_item_time"
-            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginEnd="12dp"
             tools:text="День карьеры" />
 
         <TextView
@@ -30,19 +32,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:layout_constraintHorizontal_bias="0"
-            tools:text="Невероятное восхитительное событие в Университете..."
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textAppearance="?textAppearanceBodyMedium"
+            app:layout_constraintEnd_toStartOf="@id/event_item_img"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_max="250dp"
             app:layout_constraintTop_toBottomOf="@id/event_item_header"
-            app:layout_constraintEnd_toStartOf="@id/event_item_img"/>
+            android:layout_marginEnd="12dp"
+            tools:text="Невероятное восхитительное событие в Университете..." />
 
         <ImageView
             android:id="@+id/event_item_img"
             android:layout_width="112dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
             android:contentDescription="@string/event_item_image_desc"
             android:src="@color/blue_100"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -53,11 +56,11 @@
             android:id="@+id/event_item_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:textAppearance="?textAppearanceLabelLarge"
             app:layout_constraintBottom_toTopOf="@id/event_item_header"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="12dp"
             tools:text="14 декабря 20:00" />
 
         <TextView
