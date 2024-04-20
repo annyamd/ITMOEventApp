@@ -46,8 +46,6 @@ class GeneralEventsViewModel(
         val title = titleReceived ?: ""
         if (title.length > FILTER_TITLE_LENGTH_MAX) {
             InputResult.Error(FILTER_MESSAGE_TOO_LONG)
-        } else if (!onlyLetters(title)) {
-            InputResult.Error(FILTER_MESSAGE_SYMBOLS_INVALID)
         } else {
             InputResult.Success
         }
@@ -80,10 +78,10 @@ class GeneralEventsViewModel(
             && filterResultTitleLiveData.value is InputResult.Success
         ) {
             val status = filterInputStatusLiveData.value.let {
-                if (it.isNullOrEmpty()) null else it
+                if (it.isNullOrEmpty() || it == "--") null else it
             }
             val format = filterInputFormatLiveData.value.let {
-                if (it.isNullOrEmpty()) null else it
+                if (it.isNullOrEmpty() || it == "--") null else it
             }
             val title = filterInputTitleLiveData.value.let {
                 if (it.isNullOrEmpty()) null else it
@@ -100,7 +98,6 @@ class GeneralEventsViewModel(
         }
     }
 
-    private fun onlyLetters(s: String) = (s.firstOrNull { !it.isLetter() } == null)
     private fun isDateValid(dateString: String) = FILTER_DATE_REGEX.toRegex().matches(dateString)
     private fun parseDate(dateString: String?): Date? {
         val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(FILTER_DATE_PATTERN)
@@ -148,8 +145,8 @@ class GeneralEventsViewModel(
         private const val FILTER_DATETIME_PATTERN: String = "dd.MM.yyyy HH:mm"
 
         private const val FILTER_MESSAGE_TOO_LONG: String = "Строка слишком длинная"
-        private const val FILTER_MESSAGE_SYMBOLS_INVALID: String =
-            "Строка содержит недопустимые символы"
+//        private const val FILTER_MESSAGE_SYMBOLS_INVALID: String =
+//            "Строка содержит недопустимые символы"
         private const val FILTER_MESSAGE_DATE_FORMAT_INVALID: String = "Некорректный формат даты"
 
     }

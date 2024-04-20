@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="event_status_array">
+        <item>--</item>
         <item>DRAFT</item>
         <item>PUBLISHED</item>
         <item>COMPLETED</item>
         <item>CANCELED</item>
     </string-array>
     <string-array name="event_format_array">
+        <item>--</item>
         <item>ONLINE</item>
         <item>OFFLINE</item>
         <item>HYBRID</item>
